@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "repo-ready": {
+      "source": "jongio/skills",
+      "sourceType": "github",
+      "skillPath": "skills/repo-ready/SKILL.md",
+      "computedHash": "91dc3d53474100ca8997c81d7657135a0ba596da93dde2ade3645c3d7b2ec463"
+    }
+  }
+}

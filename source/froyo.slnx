@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="froyo-agent/froyo-agent.csproj" />
+  <Project Path="sundae-support-agent/sundae-support-agent.csproj" />
+</Solution>

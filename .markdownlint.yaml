@@ -1,0 +1,39 @@
+# MD004 - Unordered list style
+MD004: false
+
+# MD007 - Unordered list indentation
+MD007:
+  indent: 2
+
+# MD013 - Line length
+# Disabled: tables, long links, and mermaid blocks frequently exceed 80 chars
+MD013: false
+
+# MD026 - Trailing punctuation in heading
+MD026:
+  punctuation: ".,;:!。，；:"
+
+# MD029 - Ordered list item prefix
+MD029: false
+
+# MD032 - Lists should be surrounded by blank lines
+# Disabled: in some cases, such as lists inside tables or code blocks, blank lines are not necessary or desirable.
+MD032: false
+
+# MD033 - Inline HTML
+MD033: false
+
+# MD036 - Emphasis used instead of a heading
+MD036: false
+
+# MD041 - First line in file should be a top-level heading
+# Disabled: agent files and instructions start with YAML frontmatter (---)
+MD041: false
+
+# MD031 - Allow blank lines configuration
+MD031: false
+
+# MD025 - Multiple top-level headings in the same document
+# Disable use of front matter title to avoid false positives in agent files and instructions
+MD025:
+  front_matter_title: ""

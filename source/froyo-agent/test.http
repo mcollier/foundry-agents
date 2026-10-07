@@ -1,0 +1,58 @@
+POST http://localhost:8088/responses
+Content-Type: application/json
+x-agent-user-id: local-user
+# x-agent-user-isolation-key: local-user
+# x-agent-chat-isolation-key: local-chat
+
+{
+    "input": "Hello, how are you?"    
+}
+
+###
+
+POST http://localhost:8088/responses
+Content-Type: application/json
+x-agent-user-id: local-user
+
+{
+    "input": "Hello, what tools do you have access to?"
+}
+
+###
+
+POST http://localhost:8088/responses
+Content-Type: application/json
+Foundry-Features: CodeAgents=V1Preview,HostedAgents=V1Preview
+
+{
+    "input": "Hello, how are you?"    
+}
+
+###
+
+POST http://localhost:8088/responses
+Content-Type: application/json
+x-agent-user-id: local-user
+
+{
+    "input": "I really like Chocolate. I'm allergic to nuts. What flavors do you recommend?"
+}
+
+###
+POST http://localhost:8088/responses
+Content-Type: application/json
+x-agent-user-id: local-user
+
+{
+    "input": "What's your name?"
+}
+
+###
+
+POST http://localhost:8088/responses
+Content-Type: application/json
+x-agent-user-id: local-user
+
+{
+    "input": "I would like a bowl of Smashing Strawberry.  Do you have that?"
+}
