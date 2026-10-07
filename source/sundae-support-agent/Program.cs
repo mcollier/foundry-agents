@@ -3,16 +3,20 @@ using Azure.AI.Projects.Agents;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 
+var environmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
+
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
     .Build();
 
 var foundrySection = configuration.GetSection("Foundry");
-var projectName = foundrySection["ProjectName"] ?? throw new InvalidOperationException("Foundry:ProjectName is not configured.");
-var resourceName = foundrySection["ResourceName"] ?? throw new InvalidOperationException("Foundry:ResourceName is not configured.");
-var foundryAgentName = foundrySection["FoundryAgentName"] ?? throw new InvalidOperationException("Foundry:FoundryAgentName is not configured.");
-var model = foundrySection["Model"] ?? throw new InvalidOperationException("Foundry:Model is not configured.");
+var projectName = GetRequiredSetting(foundrySection, "ProjectName");
+var resourceName = GetRequiredSetting(foundrySection, "ResourceName");
+var foundryAgentName = GetRequiredSetting(foundrySection, "FoundryAgentName");
+var model = GetRequiredSetting(foundrySection, "Model");
 var foundryProjectEndpoint = $"https://{resourceName}.services.ai.azure.com/api/projects/{projectName}";
 
 Console.WriteLine($"Foundry project endpoint: {foundryProjectEndpoint}");
@@ -37,3 +41,15 @@ ProjectsAgentVersion agent = projectClient.AgentAdministrationClient.CreateAgent
 );
 
 Console.WriteLine($"Created agent version: {agent.Version}, id: {agent.Id}, name: {agent.Name}");
+
+// Returns the configured value for the given key, or throws if it is missing, empty, or whitespace.
+static string GetRequiredSetting(IConfigurationSection section, string key)
+{
+    var value = section[key];
+    if (string.IsNullOrWhiteSpace(value))
+    {
+        throw new InvalidOperationException($"{section.Path}:{key} is not configured.");
+    }
+
+    return value;
+}
