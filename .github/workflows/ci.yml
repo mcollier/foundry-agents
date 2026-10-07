@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build .NET project
+        run: dotnet build source/froyo.slnx --configuration Release
+
+      - name: Test .NET project
+        run: dotnet test source/froyo-agent/froyo-agent.csproj --configuration Release --no-build
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
+        with:
+          inlineScript: az bicep build --file infra/main.bicep

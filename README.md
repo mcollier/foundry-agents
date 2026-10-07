@@ -1,7 +1,7 @@
-# Microsoft Foundry Hosted Agent Demo
+# Microsoft Foundry Agent Demo
 
-A demonstration project for using the Microsoft Foundry Hosted Agent service
-with an agent built on the Microsoft Agent Framework.
+A demonstration project for using the Microsoft Foundry Prompt Agents and Hosted Agent service.
+Hosted Agent built using the Microsoft Agent Framework.
 
 ## What is included
 
@@ -40,6 +40,7 @@ Review the parameters in `infra/main.bicepparam` and the deployment plan in
 | --- | --- |
 | `infra/` | Bicep templates and deployment parameters |
 | `source/froyo-agent/` | .NET hosted agent implementation |
+| `source/sundae-support-agent/` | .NET prompt agent code implementation |
 | `azure.yaml` | Azure Developer CLI project configuration |
 | `.devcontainer/` | Development container configuration |
 | `.azure/` | Local Azure Developer CLI and deployment planning files |

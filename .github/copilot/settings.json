@@ -1,0 +1,40 @@
+{
+  "extraKnownMarketplaces": {
+    "context7-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "upstash/context7"
+      }
+    },
+    "azure-skills": {
+      "source": {
+        "source": "github",
+        "repo": "microsoft/azure-skills"
+      }
+    },
+    "addy-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "addyosmani/agent-skills"
+      }
+    },
+    "dotnet-skills":{
+      "source": {
+        "source": "github",
+        "repo": "dotnet/skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "context7@context7-marketplace": true,
+    "azure@azure-skills": true,
+    "agent-skills@addy-agent-skills": true,
+    "dotnet@dotnet-skills": true,
+    "dotnet-msbuild@dotnet-skills": true,
+    "dotnet-nuget@dotnet-skills": true,
+    "dotnet-ai@dotnet-skills": true,
+    "dotnet-test@dotnet-skills": true,
+    "dotnet-aspnetcore@dotnet-skills": true,
+    "dotnet-blazor@dotnet-skills": true
+  }
+}
