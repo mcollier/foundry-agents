@@ -26,6 +26,6 @@ jobs:
         run: dotnet test source/froyo-agent/froyo-agent.csproj --configuration Release --no-build
 
       - name: Set up Azure CLI
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           inlineScript: az bicep build --file infra/main.bicep
