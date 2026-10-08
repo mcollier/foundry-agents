@@ -16,6 +16,7 @@
         "vscode": {
             "extensions": [
                 "davidanson.vscode-markdownlint",
+                "github.vscode-github-actions",
                 "hashicorp.terraform",
                 "humao.rest-client",
                 "microsoft-aspire.aspire-vscode",
