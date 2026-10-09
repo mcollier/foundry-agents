@@ -5,44 +5,36 @@ namespace froyo_fulfillment_agent.Tests.Services;
 
 public class InMemoryInventoryRepositoryTests
 {
-    public static TheoryData<string> StoreIds => new(FroyoCatalog.Stores);
+    private static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> Stock =
+        InMemoryInventoryRepository.DefaultStock;
 
-    [Theory]
-    [MemberData(nameof(StoreIds))]
-    public async Task GetStoreStockAsync_EachStore_HasEveryCatalogItem(string storeId)
+    [Fact]
+    public void DefaultStock_CoversEveryStore()
     {
-        var stock = await new InMemoryInventoryRepository().GetStoreStockAsync(storeId);
-
-        Assert.NotNull(stock);
-        Assert.Equal(storeId, stock.StoreId);
-        Assert.Equal(FroyoCatalog.Flavors.Order(), stock.FlavorOunces.Keys.Order());
-        Assert.Equal(FroyoCatalog.Toppings.Order(), stock.ToppingPortions.Keys.Order());
-        Assert.Equal(FroyoCatalog.Cones.Order(), stock.ConeUnits.Keys.Order());
+        Assert.Equal(FroyoMenu.Stores.Order(), Stock.Keys.Order());
     }
 
-    [Theory]
-    [MemberData(nameof(StoreIds))]
-    public async Task GetStoreStockAsync_EachStore_HasNoNegativeQuantities(string storeId)
+    [Fact]
+    public void DefaultStock_EveryStoreHasEveryMenuItem()
     {
-        var stock = await new InMemoryInventoryRepository().GetStoreStockAsync(storeId);
+        string[] items = [.. FroyoMenu.Flavors, .. FroyoMenu.Toppings, FroyoMenu.WaffleCone];
 
-        Assert.NotNull(stock);
-        Assert.All(stock.FlavorOunces.Values.Concat(stock.ToppingPortions.Values).Concat(stock.ConeUnits.Values),
-            quantity => Assert.True(quantity >= 0));
+        Assert.All(Stock.Values, stock => Assert.All(items, item => Assert.True(stock.ContainsKey(item), item)));
     }
 
-    [Theory]
-    [MemberData(nameof(StoreIds))]
-    public async Task GetStoreStockAsync_EachStore_HasAtLeastOneShortageForDemos(string storeId)
+    [Fact]
+    public void DefaultStock_EveryStoreHasAtLeastOneShortageForDemos()
     {
-        var stock = await new InMemoryInventoryRepository().GetStoreStockAsync(storeId);
+        Assert.All(Stock.Values, stock => Assert.Contains(stock.Values, quantity => quantity < 16));
+    }
+
+    [Fact]
+    public async Task GetStoreStockAsync_KnownStore_ReturnsStock()
+    {
+        var stock = await new InMemoryInventoryRepository().GetStoreStockAsync(StoreIds.ShortNorth);
 
         Assert.NotNull(stock);
-        var hasShortage =
-            stock.FlavorOunces.Values.Any(ounces => ounces < FroyoCatalog.OuncesFor(CupSize.Terabyte))
-            || stock.ToppingPortions.Values.Any(portions => portions == 0)
-            || stock.ConeUnits.Values.Any(units => units == 0);
-        Assert.True(hasShortage);
+        Assert.Equal(320, stock[FlavorNames.MintCondition]);
     }
 
     [Fact]
@@ -52,8 +44,13 @@ public class InMemoryInventoryRepositoryTests
     }
 
     [Fact]
-    public async Task GetStoreStockAsync_StoreIdDifferentCase_ReturnsStock()
+    public async Task GetStoreStockAsync_SuppliedStock_UsesIt()
     {
-        Assert.NotNull(await new InMemoryInventoryRepository().GetStoreStockAsync("CLE-THE-FLATS"));
+        var repository = new InMemoryInventoryRepository(
+            new Dictionary<string, IReadOnlyDictionary<string, int>> { [StoreIds.OverTheRhine] = new Dictionary<string, int> { [FlavorNames.JavaJolt] = 5 } });
+
+        var stock = await repository.GetStoreStockAsync(StoreIds.OverTheRhine);
+
+        Assert.Equal(5, stock![FlavorNames.JavaJolt]);
     }
 }

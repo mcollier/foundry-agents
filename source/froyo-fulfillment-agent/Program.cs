@@ -8,7 +8,8 @@ using froyo_fulfillment_agent.Services;
 using froyo_fulfillment_agent.Tools;
 
 // Host the agent as a Foundry hosted agent using the Responses API.
-var builder = WebApplication.CreateBuilder(args);
+// var builder = WebApplication.CreateBuilder(args);
+var builder = AgentHost.CreateBuilder(args);
 
 // Get the Foundry project endpoint from configuration or environment variable
 var endpointValue = GetFoundryEndpointValue();
@@ -20,12 +21,15 @@ var deployment = GetModelDeploymentName();
 var toolboxName = GetFoundryToolboxName();
 
 // Get the appropriate TokenCredential based on the environment
-TokenCredential credential = GetAuthenticationTokenCredential(builder);
+TokenCredential credential = GetAuthenticationTokenCredential(builder.WebApplicationBuilder);
 
 var instructions = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "agent-instructions.md"));
 
-// Hardcoded inventory for now; swap InMemoryInventoryRepository for a database-backed IInventoryRepository later.
-var inventoryTools = new InventoryTools(new InventoryService(new InMemoryInventoryRepository()));
+// Stock and pricing tools. The menu and allergen knowledge base comes from the Foundry toolbox below.
+// The agent is built before the container, so the repository is created here and passed to the tools.
+// Swap InMemoryInventoryRepository for a database-backed IInventoryRepository later.
+IInventoryRepository inventory = new InMemoryInventoryRepository();
+var froyoTools = new FroyoTools(inventory);
 
 // Create the agent via the AI project client using the Responses API.
 AIAgent agent = new AIProjectClient(projectEndpoint, credential)
@@ -35,7 +39,7 @@ AIAgent agent = new AIProjectClient(projectEndpoint, credential)
         name: "Froyo Fulfillment Agent",
         description: "This agent handles froyo fulfillment requests.",
         tools: [
-            .. inventoryTools.AsAIFunctions()
+            .. froyoTools.AsAIFunctions()
         ]
     );
 
@@ -48,7 +52,7 @@ builder.Services.AddFoundryResponses(agent);
 builder.Services.AddFoundryToolboxes(credential, toolboxName);
 
 var app = builder.Build();
-app.MapFoundryResponses();
+app.App.MapFoundryResponses();
 app.Run();
 
 /// <summary>

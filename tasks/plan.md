@@ -1,85 +1,26 @@
-# Implementation Plan: Inventory Service
+# Implementation Plan: Simplify Fulfillment Agent
 
-Spec: [docs/specs/SPEC-inventory-service.md](../docs/specs/SPEC-inventory-service.md)
+Spec: [docs/specs/SPEC-fulfillment-tools.md](../docs/specs/SPEC-fulfillment-tools.md)
 
 ## Overview
 
-Add an `IInventoryService` to the Froyo Fulfillment Agent that reports per-store stock and checks whether a store can fulfill a list of order items. Raw stock comes from an `IInventoryRepository`, starting with a hardcoded in-memory implementation. Two agent tools, `GetAvailableInventory` and `CheckInventory`, expose the service to the agent in Program.cs. Every task follows a red, green, refactor loop.
+Replace the inventory service layers with a small set of tools. Menu and allergen facts come from a Foundry knowledge base, the model recommends alternatives, and code handles stock and pricing.
 
-## Architecture Decisions
+## Architecture decisions
 
-- **Three parts.** A static `FroyoCatalog` holds menu facts. `IInventoryRepository` holds raw stock. `InventoryService` holds the rules. Swapping the data source touches only the repository.
-- **Ounces for flavors.** All sizes draw from one store-level quantity per flavor. Servings per size are derived, never stored.
-- **Never throw to the agent.** Unknown stores and names, and invalid quantities, are reported as statuses in the result.
-- **Service tests use a fake repository.** Rule tests never depend on hardcoded seed data.
-- **No DI yet.** Program.cs creates the repository, service, and tools directly before building the agent.
-- **Enums as strings.** `CupSize` and `StockStatus` use `JsonStringEnumConverter`, so tool schemas and results show names such as `"Megabyte"` instead of numbers.
+- **Knowledge in markdown.** `docs/froyo-menu.md` and `docs/froyo-allergen-sheet.md` are the knowledge base. Code repeats only the facts it needs for math, and `MenuDocumentSyncTests` catches drift.
+- **Inventory behind an interface.** `FroyoTools` depends on `IInventoryRepository`. `InMemoryInventoryRepository` holds demo stock, and tests pass their own small stock to it.
+- **Separate tools.** `CheckStock` and `PriceOrder` answer different questions. `GetStoreStock` gives the model what it needs to pick alternatives.
+- **Topping bundle per serving.** Each serving's toppings are priced in groups of 3 for $2.50, with the rest at $0.95.
 
-## Dependency Graph
+## Task list
 
-```text
-FroyoCatalog, CupSize
-    |
-    +-- Inventory models, IInventoryRepository
-            |
-            +-- InventoryService.GetAvailableInventoryAsync
-            |       |
-            |       +-- InventoryService.CheckInventoryAsync (flavors, then toppings, cones, invalid)
-            |
-            +-- InMemoryInventoryRepository (seed data)
-                    |
-InventoryService ---+-- InventoryTools
-                            |
-                            +-- Program.cs wiring
-```
+Details are in [todo.md](todo.md).
 
-## Task List
-
-Detailed tasks with acceptance criteria are in [todo.md](todo.md).
-
-### Phase 1: Foundation
-
-- [x] Task 1: Catalog and cup sizes
-- [x] Task 2: GetAvailableInventoryAsync with a fake repository
-
-### Checkpoint: Foundation
-
-- [x] All tests pass and the solution builds
-
-### Phase 2: Order checking
-
-- [x] Task 3: CheckInventoryAsync for flavors
-- [x] Task 4: CheckInventoryAsync for toppings, cones, unknown names, and invalid quantities
-
-### Checkpoint: Service complete
-
-- [x] All service behavior rules in the spec have tests and pass
-- [x] Review with human before wiring
-
-### Phase 3: Data and agent integration
-
-- [x] Task 5: InMemoryInventoryRepository seed data
-- [x] Task 6: InventoryTools agent adapter
-- [x] Task 7: Wire tools into the agent in Program.cs
-
-### Checkpoint: Complete
-
-- [x] All spec success criteria met
-- [x] Ready for review
-
-## Parallelization
-
-Task 5 depends only on Task 2, so it could run alongside Tasks 3 and 4. Task 6 needs the order models from Tasks 3 and 4. Tasks 3 and 4 change the same method and must run in order. Because this is a small feature, the plan runs all tasks one after another.
-
-## Risks and Mitigations
-
-| Risk | Impact | Mitigation |
-|---|---|---|
-| `AIFunctionFactory` serializes enums as numbers, so the model sends invalid sizes | Medium | Add a string enum converter. Assert the tool JSON schema contains `"Byte"` in Task 6 |
-| A manual agent run needs Foundry endpoint and toolbox configuration | Medium | Automated success relies on unit tests and build. The manual run is a best-effort check using existing appsettings |
-| Catalog drifts from `docs/froyo-menu.md` | Low | Task 1 tests assert the exact flavor and topping lists |
-| The test project references a web SDK project | Low | Confirm it builds during the Task 1 red step |
-
-## Open Questions
-
-None. Spec decisions are recorded in the spec.
+- [x] Task 1: Add prices and order validation to `FroyoMenu`
+- [x] Task 2: Simplify `IInventoryRepository` to return raw stock, with `InMemoryInventoryRepository` as the implementation
+- [x] Task 3: Add `FroyoTools` with `GetStoreStock`, `CheckStock`, and `PriceOrder`
+- [x] Task 4: Wire `FroyoTools` in `Program.cs` and remove the service layer
+- [x] Task 5: Rewrite `agent-instructions.md` for the new tools
+- [ ] Task 6: Create the knowledge base and add it to the `froyo-foundry` toolbox
+- [ ] Task 7: Manual run with `froyo-fulfillment-agent.http`

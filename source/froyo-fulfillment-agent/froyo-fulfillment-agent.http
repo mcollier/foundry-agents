@@ -23,3 +23,30 @@ Content-Type: application/json
 {
     "input": "Does the Mint Condition froyo contain any nuts?"
 }
+
+### Shortage and alternatives (Mochi Bits is out of stock in Columbus)
+
+POST {{froyo_fulfillment_agent_HostAddress}}/responses/
+Content-Type: application/json
+
+{
+    "input": "Two Kilobyte Aicai Bowls with Mochi Bits in cups from Short North, please. How much will that be?"
+}
+
+### Shortage of Berry Blockchain Blast (out of stock in The Flats)
+
+POST {{froyo_fulfillment_agent_HostAddress}}/responses/
+Content-Type: application/json
+
+{
+    "input": "I would like a Megabyte cup of Berry Blockchain Blast froyo with chocolate chips from The Flats."
+}
+
+### Valid order of Cloud Caramel Cache from Columbus
+
+POST {{froyo_fulfillment_agent_HostAddress}}/responses/
+Content-Type: application/json
+
+{
+    "input": "I would like a 3 Kilobyte cups of Cloud Caramel Cache froyo with caramel drizzle, and 2 Megabyte cups of Mint Condition (no toppings) in waffle cones from the Columbus location."
+}
