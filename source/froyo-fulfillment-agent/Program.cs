@@ -17,6 +17,8 @@ var projectEndpoint = new Uri(endpointValue);
 // Get the model deployment name from configuration or environment variable
 var deployment = GetModelDeploymentName();
 
+var toolboxName = GetFoundryToolboxName();
+
 // Get the appropriate TokenCredential based on the environment
 TokenCredential credential = GetAuthenticationTokenCredential(builder);
 
@@ -38,6 +40,12 @@ AIAgent agent = new AIProjectClient(projectEndpoint, credential)
     );
 
 builder.Services.AddFoundryResponses(agent);
+
+// Register Foundry Toolbox: connects to the MCP proxy at startup and makes tools available.
+// The toolbox name must match a toolbox registered in your Foundry project.
+// When FOUNDRY_PROJECT_ENDPOINT is absent (e.g., in local development without Foundry
+// infrastructure), startup succeeds without error and no toolbox tools are loaded.
+builder.Services.AddFoundryToolboxes(credential, toolboxName);
 
 var app = builder.Build();
 app.MapFoundryResponses();
@@ -111,7 +119,26 @@ static TokenCredential GetAuthenticationTokenCredential(WebApplicationBuilder bu
     return credential;
 }
 
-// var builder = WebApplication.CreateBuilder(args);
+/// <summary>
+/// Get the Foundry toolbox name from configuration or environment variable.
+/// </summary>
+/// <returns>The Foundry toolbox name as a string.</returns>
+string GetFoundryToolboxName()
+{
+    var toolboxName = builder.Configuration["Foundry:ToolboxName"];
+    if (string.IsNullOrWhiteSpace(toolboxName))
+    {
+        toolboxName = builder.Configuration["FOUNDRY_TOOLBOX_NAME"];
+    }
+
+    if (string.IsNullOrWhiteSpace(toolboxName))
+    {
+        throw new InvalidOperationException(
+            "Foundry:ToolboxName is not set. Configure Foundry:ToolboxName or FOUNDRY_TOOLBOX_NAME.");
+    }
+
+    return toolboxName;
+}
 
 // // Add services to the container.
 // // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
