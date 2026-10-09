@@ -48,5 +48,5 @@ POST {{froyo_fulfillment_agent_HostAddress}}/responses/
 Content-Type: application/json
 
 {
-    "input": "I would like a 3 Kilobyte cups of Cloud Caramel Cache froyo with caramel drizzle, and 2 Megabyte cups of Mint Condition (no toppings) in waffle cones from the Columbus location."
+    "input": "I would like a 3 Kilobyte cups of Cloud Caramel Cache froyo with caramel drizzle, and 2 Megabyte waffle cones of Mint Condition (no toppings) from the Columbus location."
 }
