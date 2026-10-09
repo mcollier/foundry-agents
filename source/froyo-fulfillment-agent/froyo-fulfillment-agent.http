@@ -1,0 +1,8 @@
+@froyo_fulfillment_agent_HostAddress = http://localhost:5223
+
+POST {{froyo_fulfillment_agent_HostAddress}}/responses/
+Content-Type: application/json
+
+{
+    "input": "Hello, I would like to order some froyo."
+}
