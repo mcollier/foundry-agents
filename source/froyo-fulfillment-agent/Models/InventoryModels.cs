@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace froyo_fulfillment_agent.Models;
@@ -36,11 +37,11 @@ public sealed record StockLevel(string Name, int Quantity, string Unit);
 /// One line of an order to check against inventory.
 /// </summary>
 public sealed record OrderItem(
-    string Flavor,
-    CupSize Size,
-    int Quantity,
-    IReadOnlyList<string>? Toppings = null,
-    string Container = FroyoCatalog.Cup);
+    [property: Description("Flavor name from the menu, for example \"Mint Condition\".")] string Flavor,
+    [property: Description("Byte (6 oz cup), Kilobyte (10 oz cup), Megabyte (14 oz cup), or Terabyte (pint).")] CupSize Size,
+    [property: Description("Number of servings of this item. Must be at least 1.")] int Quantity,
+    [property: Description("Topping names from the menu. Each topping is one portion per serving.")] IReadOnlyList<string>? Toppings = null,
+    [property: Description("\"Cup\" or \"Waffle Cone\".")] string Container = FroyoCatalog.Cup);
 
 [JsonConverter(typeof(JsonStringEnumConverter<ItemType>))]
 public enum ItemType
