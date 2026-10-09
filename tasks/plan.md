@@ -54,18 +54,18 @@ Detailed tasks with acceptance criteria are in [todo.md](todo.md).
 ### Checkpoint: Service complete
 
 - [x] All service behavior rules in the spec have tests and pass
-- [ ] Review with human before wiring
+- [x] Review with human before wiring
 
 ### Phase 3: Data and agent integration
 
-- [ ] Task 5: InMemoryInventoryRepository seed data
-- [ ] Task 6: InventoryTools agent adapter
-- [ ] Task 7: Wire tools into the agent in Program.cs
+- [x] Task 5: InMemoryInventoryRepository seed data
+- [x] Task 6: InventoryTools agent adapter
+- [x] Task 7: Wire tools into the agent in Program.cs
 
 ### Checkpoint: Complete
 
-- [ ] All spec success criteria met
-- [ ] Ready for review
+- [x] All spec success criteria met
+- [x] Ready for review
 
 ## Parallelization
 

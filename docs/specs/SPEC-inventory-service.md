@@ -226,13 +226,13 @@ Service tests never depend on the hardcoded stock values, so changing seed data 
 
 ## Success Criteria
 
-- [ ] `IInventoryService` and `IInventoryRepository` exist with the contract above.
-- [ ] Every behavior rule above has at least one unit test, and all tests pass.
-- [ ] `InMemoryInventoryRepository` provides stock for all three stores and every catalog item.
-- [ ] Program.cs creates `InMemoryInventoryRepository`, `InventoryService`, and `InventoryTools` once and passes the tools to the agent.
-- [ ] The agent has the `GetAvailableInventory` and `CheckInventory` tools.
-- [ ] `dotnet build froyo.slnx` succeeds with no new warnings.
-- [ ] Replacing the data source requires only a new `IInventoryRepository` implementation and a one-line change in Program.cs.
+- [x] `IInventoryService` and `IInventoryRepository` exist with the contract above.
+- [x] Every behavior rule above has at least one unit test, and all tests pass.
+- [x] `InMemoryInventoryRepository` provides stock for all three stores and every catalog item.
+- [x] Program.cs creates `InMemoryInventoryRepository`, `InventoryService`, and `InventoryTools` once and passes the tools to the agent.
+- [x] The agent has the `GetAvailableInventory` and `CheckInventory` tools.
+- [x] `dotnet build froyo.slnx` succeeds with no new warnings.
+- [x] Replacing the data source requires only a new `IInventoryRepository` implementation and a one-line change in Program.cs.
 
 ## Not Doing (and Why)
 

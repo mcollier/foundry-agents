@@ -119,7 +119,7 @@ Commands (run from `source/`):
 ## Checkpoint: Service complete
 
 - [x] Every service behavior rule in the spec has a test, and all tests pass
-- [ ] Review with human before integration
+- [x] Review with human before integration
 
 ## Task 5: InMemoryInventoryRepository seed data
 
@@ -127,13 +127,13 @@ Commands (run from `source/`):
 
 **Acceptance criteria:**
 
-- [ ] Every store has an entry for every catalog flavor, topping, and Waffle Cone
-- [ ] An unknown store returns null, and store IDs match case-insensitively
-- [ ] At least one item per store is below one Terabyte (16 oz) or at 0 portions
+- [x] Every store has an entry for every catalog flavor, topping, and Waffle Cone
+- [x] An unknown store returns null, and store IDs match case-insensitively
+- [x] At least one item per store is below one Terabyte (16 oz) or at 0 portions
 
 **Verification:**
 
-- [ ] Tests pass: filter `InMemoryInventoryRepository`
+- [x] Tests pass: filter `InMemoryInventoryRepository`
 
 **Dependencies:** Task 2
 
@@ -150,13 +150,13 @@ Commands (run from `source/`):
 
 **Acceptance criteria:**
 
-- [ ] The tools delegate to the service, and `storeId` defaults to `cmh-short-north`
-- [ ] The `AIFunction` names are exactly `GetAvailableInventory` and `CheckInventory`, and each has a description
-- [ ] The `CheckInventory` JSON schema exposes `CupSize` as string names (contains `"Byte"`)
+- [x] The tools delegate to the service, and `storeId` defaults to `cmh-short-north`
+- [x] The `AIFunction` names are exactly `GetAvailableInventory` and `CheckInventory`, and each has a description
+- [x] The `CheckInventory` JSON schema exposes `CupSize` as string names (contains `"Byte"`)
 
 **Verification:**
 
-- [ ] Tests pass: filter `InventoryTools`
+- [x] Tests pass: filter `InventoryTools`
 
 **Dependencies:** Task 4
 
@@ -174,14 +174,14 @@ Commands (run from `source/`):
 
 **Acceptance criteria:**
 
-- [ ] The agent's `tools` list includes `GetAvailableInventory` and `CheckInventory`
-- [ ] No other Program.cs behavior changes
+- [x] The agent's `tools` list includes `GetAvailableInventory` and `CheckInventory`
+- [x] No other Program.cs behavior changes
 
 **Verification:**
 
-- [ ] All tests pass
-- [ ] `dotnet build froyo.slnx` succeeds with no new warnings
-- [ ] Manual check (best effort): `dotnet run --project froyo-fulfillment-agent`, then ask "What's in stock at Short North?" from `froyo-fulfillment-agent.http`
+- [x] All tests pass
+- [x] `dotnet build froyo.slnx` succeeds with no new warnings
+- [ ] Manual check (best effort): `dotnet run --project froyo-fulfillment-agent`, then ask "What's in stock at Short North?" from `froyo-fulfillment-agent.http`. Partial: app startup verified with placeholder config; a live model call needs Foundry credentials
 
 **Dependencies:** Tasks 5 and 6
 
@@ -193,5 +193,5 @@ Commands (run from `source/`):
 
 ## Checkpoint: Complete
 
-- [ ] All spec success criteria met
-- [ ] Ready for review
+- [x] All spec success criteria met
+- [x] Ready for review

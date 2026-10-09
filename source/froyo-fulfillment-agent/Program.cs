@@ -4,6 +4,8 @@ using Microsoft.Agents.AI.Foundry.Hosting;
 using Microsoft.Agents.AI;
 using Azure.AI.Projects;
 using Microsoft.Extensions.AI;
+using froyo_fulfillment_agent.Services;
+using froyo_fulfillment_agent.Tools;
 
 // Host the agent as a Foundry hosted agent using the Responses API.
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +22,9 @@ TokenCredential credential = GetAuthenticationTokenCredential(builder);
 
 var instructions = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "agent-instructions.md"));
 
-// TODO - Add implementation
+// Hardcoded inventory for now; swap InMemoryInventoryRepository for a database-backed IInventoryRepository later.
+var inventoryTools = new InventoryTools(new InventoryService(new InMemoryInventoryRepository()));
+
 // Create the agent via the AI project client using the Responses API.
 AIAgent agent = new AIProjectClient(projectEndpoint, credential)
     .AsAIAgent(
@@ -29,7 +33,7 @@ AIAgent agent = new AIProjectClient(projectEndpoint, credential)
         name: "Froyo Fulfillment Agent",
         description: "This agent handles froyo fulfillment requests.",
         tools: [
-            // AIFunctionFactory.Create(ListFlavorsTool.ListFlavors)
+            .. inventoryTools.AsAIFunctions()
         ]
     );
 
