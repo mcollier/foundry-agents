@@ -11,8 +11,8 @@ services:
         project: source/froyo-fulfillment-agent
         host: azure.ai.agent
         language: csharp
-        uses:
-            - foundry-project-name
+        # uses:
+        #     - foundry-project-name
         env:
             AZURE_AI_MODEL_DEPLOYMENT_NAME: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
             FOUNDRY_TOOLBOX_NAME: ${FOUNDRY_TOOLBOX_NAME}
