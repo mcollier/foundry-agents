@@ -6,7 +6,7 @@
 
 ### Knowledge base
 
-- Already created the knowlege base. Two files:
+- Already created the knowledge base. Two files:
   - docs/froyo-allergen-sheet.md
   - docs/froyo-menu.md
 
