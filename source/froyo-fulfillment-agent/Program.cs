@@ -32,6 +32,7 @@ IInventoryRepository inventory = new InMemoryInventoryRepository();
 var froyoTools = new FroyoTools(inventory);
 
 // Create the agent via the AI project client using the Responses API.
+// Spread the custom froyo function tools into the agent's tool collection.
 AIAgent agent = new AIProjectClient(projectEndpoint, credential)
     .AsAIAgent(
         model: deployment,
