@@ -3,14 +3,20 @@
 name: foundry-maf-demo
 metadata:
     template: azd-init
+infra:
+    provider: bicep
+    path: infra
 services:
     froyo-fulfillment-agent:
         project: source/froyo-fulfillment-agent
         host: azure.ai.agent
         language: csharp
+        uses:
+            - foundry-project-name
         env:
             AZURE_AI_MODEL_DEPLOYMENT_NAME: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
             FOUNDRY_TOOLBOX_NAME: ${FOUNDRY_TOOLBOX_NAME}
+            FOUNDRY_TOOLBOX_VERSION: ${FOUNDRY_TOOLBOX_VERSION}
         codeConfiguration:
             dependencyResolution: remote_build
             entryPoint: froyo-fulfillment-agent.dll
@@ -24,3 +30,6 @@ services:
         protocols:
             - protocol: responses
               version: 2.0.0
+    foundry-project:
+        host: azure.ai.project
+        endpoint: https://aif-ibce4dw3ojxak.services.ai.azure.com/api/projects/foundry-project-ibce4dw3ojxak

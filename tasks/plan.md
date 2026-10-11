@@ -22,5 +22,5 @@ Details are in [todo.md](todo.md).
 - [x] Task 3: Add `FroyoTools` with `GetStoreStock`, `CheckStock`, and `PriceOrder`
 - [x] Task 4: Wire `FroyoTools` in `Program.cs` and remove the service layer
 - [x] Task 5: Rewrite `agent-instructions.md` for the new tools
-- [ ] Task 6: Create the knowledge base and add it to the `froyo-foundry` toolbox
+- [x] Task 6: Create the knowledge base and add it to the `froyo-foundry` toolbox (created separately in Foundry)
 - [ ] Task 7: Manual run with `froyo-fulfillment-agent.http`
