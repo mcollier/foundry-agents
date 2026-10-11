@@ -31,7 +31,7 @@
     - "Which flavors are vegan?"
     - "What are the hours of the Columbus location?"
 1. show observability features in Foundry portal
-    - Go to **Traces** -> **Conversation**
+    - Go to **Traces**, then **Conversation**
 
 ## Hosted Agent
 
