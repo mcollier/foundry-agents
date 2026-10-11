@@ -16,7 +16,6 @@ services:
         env:
             AZURE_AI_MODEL_DEPLOYMENT_NAME: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
             FOUNDRY_TOOLBOX_NAME: ${FOUNDRY_TOOLBOX_NAME}
-            FOUNDRY_TOOLBOX_VERSION: ${FOUNDRY_TOOLBOX_VERSION}
         codeConfiguration:
             dependencyResolution: remote_build
             entryPoint: froyo-fulfillment-agent.dll
