@@ -45,6 +45,6 @@
         - knowledge base via Foundry Toolbox
         - notice there is a shortage and agent recommends alternatives
     - "What are the ingredients?"
-1. Open seperate terminal
+1. Open separate terminal
     - Interact with agent via `azd ai agent invoke --local "What are the hours of the short north location"`
 1. Deploy through GitHub workflow
