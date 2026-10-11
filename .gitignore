@@ -1,5 +1,3 @@
-.azure
-
 # Local, per-developer configuration overrides
 appsettings.Development.json
 appsettings.*.local.json
