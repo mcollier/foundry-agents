@@ -22,6 +22,10 @@ env:
   # Update this prompt to a safe smoke-test message that your agent should answer.
   AGENT_TEST_PROMPT: "Hello from CI. Reply with a short confirmation that you are running."
 
+concurrency:
+  group: hosted-agent-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy-and-test:
     if: github.event_name == 'workflow_dispatch' || 
