@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using froyo_fulfillment_agent.Models;
 using froyo_fulfillment_agent.Services;
@@ -51,6 +52,29 @@ public class FroyoToolsTests
         Assert.Equal(7, report.ToppingPortions[ToppingNames.HotFudge]);
         Assert.Equal(0, report.ToppingPortions[ToppingNames.MochiBits]);
         Assert.Equal(3, report.WaffleCones);
+    }
+
+    [Fact]
+    public async Task ToolMethods_EmitActivitiesWithoutRequestDetails()
+    {
+        var stoppedActivities = new List<Activity>();
+        using var listener = new ActivityListener
+        {
+            ShouldListenTo = source => source.Name == FroyoTools.TelemetrySourceName,
+            Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+            ActivityStopped = activity => stoppedActivities.Add(activity),
+        };
+        ActivitySource.AddActivityListener(listener);
+
+        var tools = DefaultTools();
+        await tools.GetStoreStock();
+        await tools.CheckStock([]);
+        tools.PriceOrder([]);
+
+        Assert.Equal(
+            ["froyo.tool.get_store_stock", "froyo.tool.check_stock", "froyo.tool.price_order"],
+            stoppedActivities.Select(activity => activity.OperationName));
+        Assert.All(stoppedActivities, activity => Assert.Empty(activity.TagObjects));
     }
 
     [Fact]

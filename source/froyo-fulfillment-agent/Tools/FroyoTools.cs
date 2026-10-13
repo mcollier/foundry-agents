@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using froyo_fulfillment_agent.Models;
 using froyo_fulfillment_agent.Services;
 using Microsoft.Extensions.AI;
@@ -10,6 +11,10 @@ namespace froyo_fulfillment_agent.Tools;
 /// </summary>
 public sealed class FroyoTools(IInventoryRepository inventory)
 {
+    public const string TelemetrySourceName = "froyo-fulfillment-agent";
+
+    private static readonly ActivitySource ActivitySource = new(TelemetrySourceName);
+
     private const string DefaultStoreId = StoreIds.ShortNorth;
     private const string StoreIdDescription =
         "Store ID: cmh-short-north (Columbus, default), cle-the-flats (Cleveland), or cvg-otr (Cincinnati).";
@@ -27,6 +32,7 @@ public sealed class FroyoTools(IInventoryRepository inventory)
         [Description(StoreIdDescription)] string storeId = DefaultStoreId,
         CancellationToken cancellationToken = default)
     {
+        using var activity = ActivitySource.StartActivity("froyo.tool.get_store_stock");
         var (id, stock) = await GetStockAsync(storeId, cancellationToken);
         if (stock is null)
         {
@@ -48,6 +54,7 @@ public sealed class FroyoTools(IInventoryRepository inventory)
         [Description(StoreIdDescription)] string storeId = DefaultStoreId,
         CancellationToken cancellationToken = default)
     {
+        using var activity = ActivitySource.StartActivity("froyo.tool.check_stock");
         var (id, stock) = await GetStockAsync(storeId, cancellationToken);
         if (stock is null)
         {
@@ -83,6 +90,7 @@ public sealed class FroyoTools(IInventoryRepository inventory)
         "including topping and waffle cone charges.")]
     public PriceQuote PriceOrder([Description("The order items to price.")] IReadOnlyList<OrderItem> items)
     {
+        using var activity = ActivitySource.StartActivity("froyo.tool.price_order");
         var (resolved, errors) = FroyoMenu.Resolve(items);
 
         var lines = resolved.Select(ToPriceLine).ToList();

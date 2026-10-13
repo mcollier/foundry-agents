@@ -1,15 +1,36 @@
+using Azure.AI.Projects;
 using Azure.Core;
 using Azure.Identity;
-using Microsoft.Agents.AI.Foundry.Hosting;
-using Microsoft.Agents.AI;
-using Azure.AI.Projects;
-using Microsoft.Extensions.AI;
+
 using froyo_fulfillment_agent.Services;
 using froyo_fulfillment_agent.Tools;
+
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Foundry.Hosting;
+using Microsoft.Extensions.AI;
+
+using OpenTelemetry.Metrics;
+
 
 // Host the agent as a Foundry hosted agent using the Responses API.
 // var builder = WebApplication.CreateBuilder(args);
 var builder = AgentHost.CreateBuilder(args);
+
+// AgentHost already registers an OpenTelemetry pipeline (Microsoft OpenTelemetry distro) for traces, metrics, and logs.
+// It exports to Application Insights when APPLICATIONINSIGHTS_CONNECTION_STRING is set (injected by Foundry for hosted
+// agents) or OTLP when OTEL_EXPORTER_OTLP_ENDPOINT is set. Plug the agent's source and meter into that pipeline
+// instead of creating separate providers, which would export everything twice.
+
+builder.ConfigureTracing(tracing =>
+{
+    tracing.AddSource(FroyoTools.TelemetrySourceName);
+});
+
+builder.Services.ConfigureOpenTelemetryMeterProvider(metrics =>
+{
+    metrics.AddMeter(FroyoTools.TelemetrySourceName);
+});
+
 
 // Get the Foundry project endpoint from configuration or environment variable
 var endpointValue = GetFoundryEndpointValue();
@@ -33,6 +54,8 @@ var froyoTools = new FroyoTools(inventory);
 
 // Create the agent via the AI project client using the Responses API.
 // Spread the custom froyo function tools into the agent's tool collection.
+// Only the agent is instrumented (not the chat client) to avoid duplicating prompts/responses across spans.
+// Sensitive data (prompts, responses, tool arguments/results) is intentionally recorded in all environments.
 AIAgent agent = new AIProjectClient(projectEndpoint, credential)
     .AsAIAgent(
         model: deployment,
@@ -42,7 +65,10 @@ AIAgent agent = new AIProjectClient(projectEndpoint, credential)
         tools: [
             .. froyoTools.AsAIFunctions()
         ]
-    );
+    )
+    .AsBuilder()
+    .UseOpenTelemetry(sourceName: FroyoTools.TelemetrySourceName, configure: cfg => cfg.EnableSensitiveData = true)
+    .Build();
 
 builder.Services.AddFoundryResponses(agent);
 
@@ -144,43 +170,3 @@ string GetFoundryToolboxName()
 
     return toolboxName;
 }
-
-// // Add services to the container.
-// // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-// builder.Services.AddOpenApi();
-
-// var app = builder.Build();
-
-// // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.MapOpenApi();
-// }
-
-// app.UseHttpsRedirection();
-
-// var summaries = new[]
-// {
-//     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-// };
-
-// app.MapGet("/weatherforecast", () =>
-// {
-//     var forecast =  Enumerable.Range(1, 5).Select(index =>
-//         new WeatherForecast
-//         (
-//             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//             Random.Shared.Next(-20, 55),
-//             summaries[Random.Shared.Next(summaries.Length)]
-//         ))
-//         .ToArray();
-//     return forecast;
-// })
-// .WithName("GetWeatherForecast");
-
-// app.Run();
-
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }

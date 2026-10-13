@@ -65,6 +65,32 @@ Configure `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_AI_MODEL_DEPLOYMENT_NAME`, and `FOU
 dotnet run --project source/froyo-fulfillment-agent
 ```
 
+## Observability
+
+The fulfillment agent emits OpenTelemetry traces, metrics, and logs through the [Agent Framework observability](https://learn.microsoft.com/agent-framework/agents/observability?pivots=programming-language-csharp) instrumentation. `Program.cs` wraps the agent with `UseOpenTelemetry` and adds its telemetry to the pipeline that `AgentHost` already registers.
+
+| Item | Value |
+| ---- | ----- |
+| Activity source and meter | `froyo-fulfillment-agent` |
+| Spans | `invoke_agent`, `chat`, and `execute_tool` following the GenAI semantic conventions |
+| Metrics | `gen_ai.client.operation.duration` and `gen_ai.client.token.usage` |
+
+Exporters depend on the environment:
+
+| Environment | Exporter | How it's enabled |
+| ----------- | -------- | ---------------- |
+| Foundry hosted agent | Azure Monitor (Application Insights) | Foundry injects `APPLICATIONINSIGHTS_CONNECTION_STRING` from the project's Application Insights connection. No configuration is needed. |
+| Any | OTLP | Set `OTEL_EXPORTER_OTLP_ENDPOINT`. |
+| Local `Development` | Console | Set `ASPNETCORE_ENVIRONMENT=Development`. Traces, metrics, and logs are written to standard output. |
+
+To find traces for the hosted agent:
+
+- In the Foundry portal, open the agent and select **Traces**.
+- In Application Insights, query the `dependencies` table where `cloud_RoleName == "froyo-fulfillment-agent"` and `name startswith "invoke_agent"`.
+
+> [!WARNING]
+> Sensitive data capture is turned on (`EnableSensitiveData = true`). Prompts, responses, tool arguments, and tool results, including customer and order details, are stored in Application Insights. Restrict access to the Application Insights resource, or set `EnableSensitiveData` to `false` in `Program.cs` for production.
+
 ## Repository layout
 
 | Path | Purpose |
