@@ -27,12 +27,12 @@ var projectClient = new AIProjectClient(
     tokenProvider: new AzureCliCredential());
 
 // Read the instructions from the file at /workspaces/foundry-agents/docs/sundae-support-instructions.md
-var instructions = File.ReadAllText("/workspaces/foundry-agents/docs/sundae-support-instructions.md");
+// var instructions = File.ReadAllText("/workspaces/foundry-agents/docs/sundae-support-instructions.md");
 
 // Create an agent with a model and system prompt / instructions.
 ProjectsAgentDefinition agentDefinition = new DeclarativeAgentDefinition(model)
 {
-    Instructions = instructions
+    Instructions = File.ReadAllText("/workspaces/foundry-agents/docs/sundae-support-instructions.md")
 };
 
 ProjectsAgentVersion agent = projectClient.AgentAdministrationClient.CreateAgentVersion(
