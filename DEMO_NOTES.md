@@ -15,7 +15,7 @@
 - Create a new agent in the portal
   - show the data sources: [froyo-allergen-sheet.md](./docs/froyo-allergen-sheet.md) and [froyo-menu.md](./docs/froyo-menu.md)
   - Set the knowledge base
-  - Set the model - gpt-5.6-sol
+  - Set the model to `gpt-5.6-sol`
   - Set the instructions from [sundae-support-instructions.md](./docs/sundae-support-instructions.md)
   - interact with the agent
 
