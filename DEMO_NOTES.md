@@ -13,13 +13,20 @@
 ### Portal
 
 - Create a new agent in the portal
-  - Set the model
-  - Set the instructions from agent-instructions.md
+  - show the data sources: [froyo-allergen-sheet.md](./docs/froyo-allergen-sheet.md) and [froyo-menu.md](./docs/froyo-menu.md)
   - Set the knowledge base
+  - Set the model - gpt-5.6-sol
+  - Set the instructions from [sundae-support-instructions.md](./docs/sundae-support-instructions.md)
+  - interact with the agent
 
 ### Existing agent
 
 **froyo-sundae-support**
+
+### Questions
+
+- What flavors do you have?
+- What flavors contain soy?
 
 ### Client console app
 
