@@ -26,7 +26,7 @@ var agentName = GetRequiredSetting(foundrySection, "FoundryAgentName");
 var endpoint = $"https://{resourceName}.services.ai.azure.com/api/projects/{projectName}";
 
 // Connect to your project using the endpoint from your project page.
-// DefaultAzureCredential can use your Azure CLI identity; run `az login` for local authentication.
+// AzureCliCredential can use your Azure CLI identity; run `az login` for local authentication.
 AIProjectClient projectClient = new(endpoint: new Uri(endpoint), tokenProvider: new AzureCliCredential());
 
 ProjectResponsesClient agentClient =
