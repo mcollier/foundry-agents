@@ -76,7 +76,8 @@ jobs:
           azd env set FOUNDRY_TOOLBOX_NAME "${{ vars.FOUNDRY_TOOLBOX_NAME }}"
           azd env set AZURE_AI_MODEL_DEPLOYMENT_NAME "${{ vars.AZURE_AI_MODEL_DEPLOYMENT_NAME }}"
 
-          azd env get-values
+          # azd env get-values
+          echo "Deployment environment configured."
 
       - name: Deploy agent
         working-directory: ${{ env.AGENT_PROJECT_DIR }}
