@@ -24,7 +24,7 @@ jobs:
         run: dotnet build source/froyo.slnx --configuration Release
 
       - name: Test .NET project
-        run: dotnet test source/froyo-agent/froyo-agent.csproj --configuration Release --no-build
+        run: dotnet test source/froyo.slnx --configuration Release --no-build
 
       - name: Set up Azure CLI
         uses: azure/cli@v3
